@@ -1,38 +1,3 @@
---[[
-    Monolith | ESP Module
-]]
-local customFont = Drawing.new("Font", "smallest_pixel-7")
-customFont.Data = game:HttpGet("https://cdn.discordapp.com/attachments/1221154701987549196/1230602695468122162/smallest_pixel-7.ttf?ex=66256a92&is=66241912&hm=ed2f29c9798d25cb1b17d186839186f531ef25260344da11d51f0e4f0d3566ff&")
-
-
-local Path = 
-	"https://raw.githubusercontent.com/archives11/assets/main/"
-local images = {
-    ["[Phone]"] = game:HttpGet(Path.. "[Phone].png"),
-    ["Combat"] = game:HttpGet(Path.. "Combat.png"),
-    ["Wallet"] = game:HttpGet(Path.. "Wallet.png"),
-	["[AK47]"] = game:HttpGet(Path.. "ak.png"),
-	["[AR]"] = game:HttpGet(Path.. "ar.png"),
-	["[AUG]"] = game:HttpGet(Path.. "aug.png"),
-	["[Double-Barrel SG]"] = game:HttpGet(Path.. "db.png"),
-	["[DrumGun]"] = game:HttpGet(Path.. "drumgun.png"),
-	["[Flamethrower]"] = game:HttpGet(Path.. "flame.png"),
-	["[Glock]"] = game:HttpGet(Path.. "glock.png"),
-	["[LMG]"] = game:HttpGet(Path.. "lmg.png"),
-	["[P90]"]= game:HttpGet(Path.. "p90.png"),
-    ["[RPG]"]= game:HttpGet(Path.. "rpg.png"),
-	["[Revolver]"] = game:HttpGet(Path.. "rev.png"),
-	["[SMG]"] = game:HttpGet(Path.. "smg.png"),
-	["[Shotgun]"] = game:HttpGet(Path.. "shotgun.png"),
-	["[SilencerAR]"] = game:HttpGet(Path.. "ar.png"),
-	["[TacticalShotgun]"] = game:HttpGet(Path.. "tac.png"),
-	["[Knife]"] = game:HttpGet(Path.. "knife.png"),
-	["[Rifle]"] = game:HttpGet(Path.. "rifle.png")
-} 
-
-
-
-
 -- // Tables
 local Monolith, Visuals, Color, Math = {
     Safe = false,
@@ -72,19 +37,16 @@ local Settings = {
     Name = {true, NewHex("#ffffff")},
     HealthBar = {true, NewHex("#09ff00"), NewHex("#ff0000")},
     HealthNumber = {true},
-    ArmorBar = {true, NewHex("#3492eb"), NewHex("#29fff4")},
-    ArmorNumber = {true},
+
     Weapon = {true, NewHex("#ffffff")},
     WeaponIcon = {true, NewHex("#ffffff")},
     --Distance = {true, NewHex("#ffffff")},
-  --  Flag = {true, NewHex("#e1e1e1")},
-   -- Distance = {true},
-   -- Knocked = {true},
-   -- Moving = {true},
-  --  Jumping = {true},
-  --  Desynced = {true},
-  --  Swimming = {true},
-   -- Reload = {true} -- Tells when player is reloading weapon
+    Flag = {true, NewHex("#e1e1e1")},
+    Distance = {true},
+    Moving = {true},
+    Jumping = {true},
+    Desynced = {true},
+    Swimming = {true},
 
 }
 
@@ -256,9 +218,6 @@ do -- // Visuals
                         HealthBarOutline = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = true, Color = NewHex("#000000")}),
                         HealthBarInline = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = true, Color = NewHex("#09ff00")}),
                         HealthBarValue = Visuals:Draw("Text", {Text = "100", Visible = false, Size = 13, Center = true, Color = NewHex("#09ff00"), Outline = true, OutlineColor = NewHex("#000000"), Font = customFont}),
-                        ArmorBarOutline = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = true, Color = NewHex("#000000")}),
-                        ArmorBar = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = true, Color = NewHex("#09ff00")}),
-                        ArmorBarText = Visuals:Draw("Text", {Text = "100", Visible = false, Size = 13, Center = true, Color = NewHex("#09ff00"), Outline = true, OutlineColor = NewHex("#000000"), Font = customFont}),
                         BoxFill = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = true, Color = NewHex("#000000")}),
                         BoxOutline = Visuals:Draw("Square", {Thickness = 2, Visible = false, Filled = false, Color = NewHex("#000000")}),
                         BoxInline = Visuals:Draw("Square", {Thickness = 1, Visible = false, Filled = false, Color = NewHex("#C30B00")}),
@@ -359,7 +318,6 @@ do -- // Visuals
                             Info.RootPosition = RootPart.Position
                             Info.Health = Health
                             Info.MaxHealth = MaxHealth
-                            Info.ArmorValue = Object:FindFirstChild("BodyEffects") and Object["BodyEffects"]:FindFirstChild("Armor") and Object["BodyEffects"]:FindFirstChild("Armor").Value
 
                             Info.ToolHeld =  (Object:FindFirstChildOfClass("Tool") and Object:FindFirstChildOfClass("Tool").Name) or "None"
                         else
@@ -560,7 +518,6 @@ do -- // Visuals
                             --
                             do -- // HeatlhBar
                                 if (Settings["HealthBar"][1] == true) then
-                                    local ArmorColor = Color:Lerp(Info.Health / Info.MaxHealth, Settings["ArmorBar"][2], Settings["ArmorBar"][3])
                                     local HealthSize = (Floor(BoxSize.Y * (Info.Health / Info.MaxHealth)))
                                     local Color = Color:Lerp(Info.Health / Info.MaxHealth, Settings["HealthBar"][2], Settings["HealthBar"][3])
                                     local Height = ((BoxPosition.Y + BoxSize.Y) - HealthSize)
@@ -583,9 +540,8 @@ do -- // Visuals
                                     do -- // Value
                                         if (Settings["HealthNumber"][1] == true) then
                                             local Text = Monolith:ClampString(tostring(Round(Info.Health)), BoxSize.Y)
-                                            local ArmorText = Renders.ArmorBarText
                                             local HealthNumberPosition = NewVector2((BoxPosition.X + 1), BoxPosition.Y + BoxSize.Y)
-                                            local Offset = (Settings["ArmorBar"][1]) and 23 or 18 
+                                            local Offset = 23 or 18 
                                             --
                                             HealthBarValue.Text = Text
                                             HealthBarValue.Color = Color
@@ -594,35 +550,10 @@ do -- // Visuals
                                             HealthBarValue.ZIndex = 100
                                             HealthBarValue.Transparency = HealthBarTransparency
                                             --
-                                            if (Settings["ArmorNumber"][1] == true) then 
-                                                ArmorText.Text = tostring(Info.ArmorValue)
-                                                ArmorText.Color = ArmorColor
-                                                ArmorText.Position = NewVector2(HealthNumberPosition.X - Offset, HealthNumberPosition.Y - (Info.ArmorValue / 200) * BoxSize.Y)
-                                                ArmorText.Visible = true
-                                                ArmorText.Transparency = HealthBarTransparency
+
                                         end
                                     end
                                 end
-                                do 
-                                    if (Settings["ArmorBar"][1] == true) then 
-                                        local ArmorBar, ArmorBarOutline = Renders.ArmorBar, Renders.ArmorBarOutline
-                                        -- 
-                                        local ArmorSize = (Floor(BoxSize.Y * (Info.ArmorValue / 200)))
-                                        local ArmorHeight = ((BoxPosition.Y + BoxSize.Y) - ArmorSize)
-                                        -- 
-                                        ArmorBar.Color = ArmorColor
-                                        ArmorBar.Size = NewVector2(1, ArmorSize)
-                                        ArmorBar.Position = NewVector2(BoxPosition.X - 10, ArmorHeight)
-                                        ArmorBar.Visible = true
-                                        ArmorBar.Transparency = HealthBarTransparency
-                                        --
-                                        ArmorBarOutline.Size = NewVector2(3, BoxSize.Y + 2)
-                                        ArmorBarOutline.Position = NewVector2(BoxPosition.X - 11, BoxPosition.Y - 1)
-                                        ArmorBarOutline.Visible = true
-                                        ArmorBarOutline.Transparency = HealthBarTransparency
-                                    end 
-                                end 
-                            end
                             end
                             --
                             do -- // Gun Icons 
@@ -666,21 +597,16 @@ do -- // Visuals
                                     Distance.Transparency = GeneralOpacity
                                 end
                             end]]
-
+ 
                             --
                             do -- // Flag
-                                if Library.Flags["PlayerESP_Flag_Options"] then
+                                if (Settings["Flag"][1] == true) then
                                     local Flag = Renders.Flag
                                     local FlagStr = ""
                                     --
-                                    if Library.Flags["PlayerESP_Flag_Options"], "Distance" then
+                                    if if (Settings["Distance"][1] == true)  then
                                         FlagStr ..= ("%sm\n"):format(Round(DistanceToPlayer))
                                     end  
-
-                                    --
-                                    if Library.Flags"PlayerESP_Flag_Options", "Knocked" and Player.Character.BodyEffects then
-                                       FlagStr ..= ("%s\n"):format(tostring(Player.Character.BodyEffects["K.O"].Value and "Knocked" or "Alive"))
-                                    end
                                     --
                                   --[[   if (Settings["Moving"][1] == true) and RootPart.Velocity.Magnitude >= 5 then
                                         FlagStr ..= ("%s\n"):format(tostring(RootPart.Velocity.Magnitude >= 5 and "Moving" or "Standing"))
@@ -696,10 +622,6 @@ do -- // Visuals
                                     --
                                     if (Settings["Swimming"][1] == true) and Humanoid:GetState() == Enum.HumanoidStateType.Swimming then
                                         FlagStr ..= ("%s\n"):format(tostring(Humanoid:GetState() == Enum.HumanoidStateType.Swimming and "Swimming" or ""))
-                                    end            
-                                    --
-                                    if (Settings["Reload"][1] == true) and Player.Character.BodyEffects then
-                                        FlagStr ..= ("%s\n"):format(tostring(Player.Character.BodyEffects["Reload"].Value and "Reloading" or ""))
                                     end]]
                                     --
                                     Flag.Text = FlagStr
@@ -761,5 +683,3 @@ end
 
 
 return Settings
-
-
